@@ -4,7 +4,7 @@
 #define dp23 P0_0
 
 const float VCC = 3.3;
-const float R = 5;
+const float R = 100000;
  
 //N5110 lcd(VCC,SCE,RST,DC,MOSI,SCLK,LED));
 N5110 lcd(dp4,dp24,dp23,dp25,dp2,dp6,dp18);
@@ -23,8 +23,12 @@ bool ocitaj_taster(bool &ugasen) {
     return false;
 }
 
-float otpor(float U) {
-    return U * R / VCC;
+float dajNapon() {
+	return voltage.read() * VCC;
+}
+
+float dajOtpor() {
+    return dajNapon() * R / VCC;
 }
 
 int main() {
@@ -41,9 +45,9 @@ int main() {
             resistance_mode = 1 - resistance_mode;
         lcd.clear();
         if(resistance_mode) 
-            sprintf(poruka, "Otpor: %f Ohm", otpor(voltage.read()* 20000));
+            sprintf(poruka, "Otpor: %f Ohm", dajOtpor());
         else 
-            sprintf(poruka, "Napon: %f V", voltage.read() * 3.3);
+            sprintf(poruka, "Napon: %f V", dajNapon());
         lcd.printString(poruka, 0, 0);
         wait(0.01);
     }
